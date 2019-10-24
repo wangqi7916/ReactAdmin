@@ -1,0 +1,10 @@
+.detail .left {
+  margin-right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.detail .product-img {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ddd;
+}

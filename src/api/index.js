@@ -28,3 +28,49 @@ export const reqWeather = (city) => {
     })
   })
 }
+
+// 查询分类列表
+export const reqCategory = (parentId) => ajax('/manage/category/list', {parentId})
+
+// 添加分类
+export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category/add', {categoryName, parentId}, 'POST')
+
+// 更新分类
+export const reqUpdateCategory = (categoryId, categoryName) => ajax('/manage/category/update', {categoryId, categoryName}, 'POST')
+
+// 商品分页
+export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {pageNum, pageSize})
+
+// 根据分类id获取分类
+export const reqCategoryNews = (categoryId) => ajax('/manage/category/info', {categoryId})
+
+// 搜索商品分页列表 searchType:  productName/productDesc
+export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) => ajax('/manage/product/search', {pageNum, pageSize, [searchType]: searchName})
+
+// 更新商品状态
+export const reqUpdateStatus = (productId, status) => ajax('/manage/product/updateStatus', {productId, status}, 'POST')
+
+// 删除图片
+export const reqDeleteImg = (name) => ajax('/manage/img/delete', {name}, 'POST')
+
+// 添加修改商品
+export const reqAddUpdateProduct = (product) => ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
+
+// 获取角色列表
+export const reqRoles = () => ajax('/manage/role/list')
+
+// 添加角色
+export const reqAddRole = (roleName) => ajax('/manage/role/add', {roleName}, 'POST')
+
+// 更新角色
+export const reqUpdateRole = (role) => ajax('/manage/role/update', role, 'POST')
+
+// 获取用户
+export const reqUsers = () => ajax('/manage/user/list')
+
+// 添加修改用户
+export const reqAddEditUser = (user) => ajax('/manage/user/'+ (user._id ? 'update' : 'add'), user, 'POST')
+
+// 删除用户
+export const reqDeleteUser = (userId) => ajax('/manage/user/delete', {userId}, 'POST')
+
