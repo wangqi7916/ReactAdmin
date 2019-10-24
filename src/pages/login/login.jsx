@@ -14,7 +14,6 @@ class Login extends Component {
     e.preventDefault()
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        console.log('提交 ', values);
         const {username, password} = values
         const result = await reqLogin(username, password)
         if (result.status === 0) {
@@ -37,12 +36,10 @@ class Login extends Component {
   validatePwd = (rule, value, callback) => {
     if (!value) {
       callback('密码必须输入')
-    } else if (value.length < 4) {
-      callback('密码不能小于4')
+    } else if (value.length < 2) {
+      callback('密码不能小于2')
     } else if (value.length > 12) {
       callback('密码不能大于12')
-    } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-      callback('密码必须是英文、数字或下划线')
     } else {
       callback()
     }
@@ -67,9 +64,8 @@ class Login extends Component {
               {getFieldDecorator('username', { // 配置对象：属性名是特定的
                 rules: [
                   { required: true, whitespace: true, message: '用户名必须输入'},
-                  { min: 4, message: '用户名至少4位'},
-                  { max: 12, message: '用户名最多12位'},
-                  { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数字、下划线'}
+                  { min: 2, message: '用户名至少2位'},
+                  { max: 12, message: '用户名最多12位'}
                 ],
                 initialValue: 'admin'
               })(

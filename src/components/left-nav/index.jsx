@@ -2,47 +2,63 @@ import React, {Component} from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 import menuConfig from '../../config/menuConfig'
+import memoryUtils from '../../utils/memoryUtils'
 import './index.less'
 import logo from '../../assets/images/logo.png'
 const { SubMenu } = Menu
 
 // 左侧导航
 class LeftNav extends Component {
+  // 判断当前登录用户是否有权限
+  hasAuth = (item) => {
+    const {key, isPublic} = item
+    // 是否是admin用户、isPublic是否是true、是否包含在登录的用户item.menus中
+    const username = memoryUtils.user.role.name
+    const menus = memoryUtils.user.role.menus
+    if (username === 'admin' || isPublic || menus.indexOf(key) !== -1) {
+      return true
+    } else if (item.children) {
+      return !!item.children.find(cItem => menus.indexOf(cItem.key) !== -1)
+    }
+    return false
+  }
   // 根据menu数据生成对应的标签数组
   // reduce + 递归调用 || map + 递归调用
   getMenuNodes = (menuList) => {
     const path = this.props.location.pathname
     return menuList.reduce((pre, item) => {
-      if (!item.children) {
-        pre.push((
-          <Menu.Item key={item.key}>
-            <Link to={item.key}>
+      if (this.hasAuth(item)) {
+        if (!item.children) {
+          pre.push((
+            <Menu.Item key={item.key}>
+              <Link to={item.key}>
+                <Icon type={item.icon} />
+                <span>{item.title}</span>
+              </Link>
+            </Menu.Item>
+          ))
+        } else {
+
+          // 查找一个与当前请求路径匹配的子Item
+          const cItem = item.children.find(item => path.indexOf(item.key)=== 0)
+          if (cItem) {
+            this.openKey = item.key
+          }
+
+          pre.push(
+            <SubMenu 
+              key={item.key}
+              title={
+                <span>
               <Icon type={item.icon} />
               <span>{item.title}</span>
-            </Link>
-          </Menu.Item>
-        ))
-      } else {
-
-        // 查找一个与当前请求路径匹配的子Item
-        const cItem = item.children.find(item => item.key === path)
-        if (cItem) {
-          this.openKey = item.key
+              </span>
+              }
+            >
+              {this.getMenuNodes(item.children)}
+            </SubMenu>
+          )
         }
-
-        pre.push(
-          <SubMenu 
-            key={item.key}
-            title={
-              <span>
-            <Icon type={item.icon} />
-            <span>{item.title}</span>
-            </span>
-            }
-          >
-            {this.getMenuNodes(item.children)}
-          </SubMenu>
-        )
       }
       return pre
     }, [])
